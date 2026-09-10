@@ -1,13 +1,10 @@
 module top(
     input clk,
     input rst,
-    input [7:0] D,
-    input sel,
-    output [3:0] Q,
     output [((1<<3)*8)-1:0] led_bar,
     input [((1<<3)*8)-1:0] io_in
 );
-    wire [7:0] pc_out;
+    wire [3:0] pc_out;
     wire [7:0] command;
     wire [1:0] wddr;
     wire [1:0] rddr1;
@@ -66,7 +63,7 @@ module top(
     );
 
     pc #(
-        .COUNT_WIDTH(8),
+        .COUNT_WIDTH(4),
         .STEP_WIDTH(4)
     ) u_pc (
         .clk (clk),
@@ -84,22 +81,22 @@ module top(
         .out (command),
         .key (pc_out),
         .lut ({
-            4'b0000, 8'h00, 
-            4'b0001, 8'h01, 
-            4'b0010, 8'h02, 
-            4'b0011, 8'h03, 
-            4'b0100, 8'h04, 
-            4'b0101, 8'h05, 
-            4'b0110, 8'h06, 
-            4'b0111, 8'h07, 
-            4'b1000, 8'h08, 
-            4'b1001, 8'h09, 
-            4'b1010, 8'h0A, 
-            4'b1011, 8'h0B, 
-            4'b1100, 8'h0C, 
-            4'b1101, 8'h0D, 
-            4'b1110, 8'h0E, 
-            4'b1111, 8'h0F
+            4'd0, 8'h60, 
+            4'd1, 8'h80, 
+            4'd2, 8'h90, 
+            4'd3, 8'hb1, 
+            4'd4, 8'h03, 
+            4'd5, 8'h14, 
+            4'd6, 8'h48, 
+            4'd7, 8'hf6, 
+            4'd8, 8'h80, 
+            4'd9, 8'h71, 
+            4'd10, 8'hcb, 
+            4'd11, 8'hfa, 
+            4'd12, 8'h59, 
+            4'd13, 8'hc2, 
+            4'd14, 8'h00, 
+            4'd15, 8'h00
         })
     );
 
@@ -110,7 +107,9 @@ module top(
         .b   (Q2),
         .cin (1'b0),
         .sum (add_data),
+        /* verilator lint_off PINCONNECTEMPTY */
         .cout()
+        /* verilator lint_on PINCONNECTEMPTY */
     );
 
 endmodule

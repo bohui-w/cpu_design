@@ -3,15 +3,15 @@ module scommand_code (
     input [7:0] add_data,
     input [7:0] io_data,
     input eq_flag,
-    output [7:0] wdata,
-    output [1:0] wddr,
-    output wen,
-    output [1:0] rddr1,
-    output [1:0] rddr2,
+    output reg [7:0] wdata,
+    output reg [1:0] wddr,
+    output reg wen,
+    output reg [1:0] rddr1,
+    output reg [1:0] rddr2,
     output [3:0] step,
     output [2:0] io_sel,
     output pc_op,
-    output io_en,
+    output io_en
 );
     wire [1:0] c_mod = command[7:6];
     wire [1:0] c_rd = command[5:4];
@@ -21,6 +21,7 @@ module scommand_code (
     wire c_enrio = command[3];
     wire [3:0] c_step = command[5:2];
     wire [3:0] out_mod;
+    wire unused = out_mod[2] | out_mod[0];
 
     Decode #(
         .KEY_LEN(2)
@@ -52,7 +53,7 @@ module scommand_code (
                 rddr2 = 2'b00;
             end
             2'b10: begin
-                wdata = {6'd000000, c_rddr2_imm} << (c_rddr1_s << 1);
+                wdata = {6'd0, c_rddr2_imm} << {c_rddr1_s, 1'b0};
                 wddr = c_rd;
                 wen = 1'b1;
                 rddr1 = 2'b00;

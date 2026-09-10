@@ -8,7 +8,7 @@ module pc #(
     input op,
     output reg [COUNT_WIDTH-1:0] dout
 );
-    always @(posedge clk or posedge rst) begin
+    always @(posedge clk) begin
         if (rst)
             dout <= {COUNT_WIDTH{1'b0}};
         else if (op == 1'b1)
