@@ -1,8 +1,9 @@
 module top(
     input clk,
     input rst,
-    output [((1<<3)*8)-1:0] led_bar,
-    input [((1<<3)*8)-1:0] io_in
+    output [15:0] led_bar,
+    input [7:0] io_in0,
+    input io_in1
 );
     wire [3:0] pc_out;
     wire [7:0] command;
@@ -19,6 +20,12 @@ module top(
     wire io_en;
     wire [2:0] io_sel;
     wire [7:0] io_data;
+    wire [63:0] io_in;
+    wire [63:0] led_bar_full;
+    assign io_in[7:0]  = io_in0;
+    assign io_in[8]    = io_in1;
+    assign io_in[63:9] = 55'b0;
+    assign led_bar = led_bar_full[15:0];
 
     scommand_code u_scommand_code (
         .command   (command),
@@ -43,7 +50,7 @@ module top(
         .sel     (io_sel),
         .dout    (io_data),
         .din     (Q1),
-        .led_bar (led_bar),
+        .led_bar (led_bar_full),
         .io_in   (io_in)
     );
 

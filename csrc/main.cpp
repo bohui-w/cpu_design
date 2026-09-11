@@ -24,7 +24,7 @@ int main() {
 
   while(1) {
     nvboard_update();
-    //dut.eval();
-    single_cycle();
+    dut.eval();
+    //single_cycle();
   }
 }

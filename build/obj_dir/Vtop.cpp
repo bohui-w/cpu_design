@@ -11,9 +11,9 @@ Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     , vlSymsp{new Vtop__Syms(contextp(), _vcname__, this)}
     , clk{vlSymsp->TOP.clk}
     , rst{vlSymsp->TOP.rst}
-    , D{vlSymsp->TOP.D}
-    , sel{vlSymsp->TOP.sel}
-    , Q{vlSymsp->TOP.Q}
+    , io_in0{vlSymsp->TOP.io_in0}
+    , io_in1{vlSymsp->TOP.io_in1}
+    , led_bar{vlSymsp->TOP.led_bar}
     , rootp{&(vlSymsp->TOP)}
 {
     // Register model with the context

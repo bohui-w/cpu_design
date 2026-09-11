@@ -1,5 +1,7 @@
 top=top
 
-D (SW7, SW6, SW5, SW4, SW3, SW2, SW1, SW0)
-sel SW8
-Q (LD3, LD2, LD1, LD0)
+clk BTNC
+rst BTNU
+led_bar (LD15, LD14, LD13, LD12, LD11, LD10, LD9, LD8, LD7, LD6, LD5, LD4, LD3, LD2, LD1, LD0)
+io_in0 (SW7, SW6, SW5, SW4, SW3, SW2, SW1, SW0)
+io_in1 SW8
