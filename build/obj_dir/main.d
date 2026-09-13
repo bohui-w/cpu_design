@@ -5,5 +5,4 @@ main.o: /home/cresthush/Desktop/project/example/csrc/main.cpp \
  /usr/local/share/verilator/include/verilated_config.h \
  /usr/local/share/verilator/include/verilatedos.h \
  /usr/local/share/verilator/include/verilated_types.h \
- /usr/local/share/verilator/include/verilated_funcs.h Vtop___024root.h \
- /home/cresthush/Desktop/project/example/csrc/semu.h
+ /usr/local/share/verilator/include/verilated_funcs.h
