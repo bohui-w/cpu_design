@@ -11,9 +11,12 @@ Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     , vlSymsp{new Vtop__Syms(contextp(), _vcname__, this)}
     , clk{vlSymsp->TOP.clk}
     , rst{vlSymsp->TOP.rst}
-    , PS2_CLK{vlSymsp->TOP.PS2_CLK}
-    , PS2_DAT{vlSymsp->TOP.PS2_DAT}
-    , led{vlSymsp->TOP.led}
+    , hsync{vlSymsp->TOP.hsync}
+    , vsync{vlSymsp->TOP.vsync}
+    , valid{vlSymsp->TOP.valid}
+    , vga_r{vlSymsp->TOP.vga_r}
+    , vga_g{vlSymsp->TOP.vga_g}
+    , vga_b{vlSymsp->TOP.vga_b}
     , rootp{&(vlSymsp->TOP)}
 {
     // Register model with the context

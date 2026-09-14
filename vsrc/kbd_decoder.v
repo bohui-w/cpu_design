@@ -69,6 +69,17 @@ module kbd_decoder (
                 8'h22: scan2ascii = "x";
                 8'h35: scan2ascii = "y";
                 8'h1A: scan2ascii = "z";
+                8'h4E: scan2ascii = "-";
+                8'h55: scan2ascii = "=";
+                8'h54: scan2ascii = "[";
+                8'h5B: scan2ascii = "]";
+                8'h5D: scan2ascii = "\\";
+                8'h4C: scan2ascii = ";";
+                8'h52: scan2ascii = "'";
+                8'h41: scan2ascii = ",";
+                8'h49: scan2ascii = ".";
+                8'h4A: scan2ascii = "/";
+                8'h0E: scan2ascii = "`";
                 default: scan2ascii = 8'h00;
             endcase
         end
@@ -85,13 +96,6 @@ module kbd_decoder (
             ascill[scan2ascii(data)[6:0]] <= 1'b0;
         else
             ascill <= ascill;
-    end
-
-    always @(posedge clk) begin
-        if (ready) begin
-            $display("data=0x%02X state=%d ascill[97]=%d nextdata_n=%d",
-         data, state, ascill[97], nextdata_n);
-        end
     end
 
 endmodule
