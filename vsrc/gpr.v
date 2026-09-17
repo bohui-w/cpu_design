@@ -1,60 +1,34 @@
-module gpr #(
-    parameter DDR_WIDTH = 2,
-    parameter WIDTH = 8
-)(
+module gpr (
     input clk,
     input rst,
-    input wen,
-    input [DDR_WIDTH-1:0] wddr,
-    input [DDR_WIDTH-1:0] rddr1,
-    input [DDR_WIDTH-1:0] rddr2,
-    input [WIDTH-1:0] Data,
-    output [WIDTH-1:0] Q1,
-    output [WIDTH-1:0] Q2
+    input w_en,
+    input [4:0] waddr,
+    input [4:0] raddr1,
+    input [4:0] raddr2,
+    input [31:0] wdata,
+    output [31:0] rdata1,
+    output [31:0] rdata2
 );
-    wire [((1<<DDR_WIDTH)*WIDTH)-1:0] mid_Q;
-    wire [(1<<DDR_WIDTH)-1:0] mid_en;
+    integer i;
 
-    selector #(
-        .KEY_LEN(DDR_WIDTH),
-        .WIDTH(WIDTH)
-    ) u_selector1 (
-        .D(mid_Q),
-        .sel(rddr1),
-        .Q(Q1)
-    );
+    reg [31:0] reg_file [0:31];
 
-    selector #(
-        .KEY_LEN(DDR_WIDTH),
-        .WIDTH(WIDTH)
-    ) u_selector2 (
-        .D(mid_Q),
-        .sel(rddr2),
-        .Q(Q2)
-    );
+    assign rdata1 = reg_file[raddr1];
+    assign rdata2 = reg_file[raddr2];
 
-    Decode #(
-        .KEY_LEN(DDR_WIDTH)
-    ) u_Decode (
-        .in(wddr),
-        .en(wen),
-        .out(mid_en)
-    );
-
-    genvar i;
-    generate
-        for (i = 0; i < (1<<DDR_WIDTH); i = i + 1) begin : reg_gen
-            Reg #(
-                .WIDTH(WIDTH),
-                .RESET_VAL(0)
-            ) u_reg (
-                .clk(clk),
-                .rst(rst),
-                .din(Data),
-                .dout(mid_Q[WIDTH*i +: WIDTH]),
-                .wen(mid_en[i])
-            );
+    always @(posedge clk) begin
+        if (rst) begin
+            for (i = 0; i < 32; i = i + 1) begin
+                reg_file[i] <= 32'd0;
+            end
         end
-    endgenerate
+        else if (w_en) begin
+            reg_file[waddr] <= wdata;
+        end
+        else begin
+            reg_file <= reg_file;
+        end
+        reg_file[0] <= 32'd0;
+    end
 
 endmodule

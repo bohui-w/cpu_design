@@ -1,19 +1,18 @@
-module pc #(
-    parameter COUNT_WIDTH = 8,
-    parameter STEP_WIDTH = 4
-)(
+module pc (
     input clk,
     input rst,
-    input [STEP_WIDTH-1:0] step,
-    input op,
-    output reg [COUNT_WIDTH-1:0] dout
+    input pc_op,
+    input [31:0] pc_next,
+    output reg [31:0] pc,
+    output [31:0] pc_plus4
 );
+    assign pc_plus4 = pc + 4;
     always @(posedge clk) begin
         if (rst)
-            dout <= {COUNT_WIDTH{1'b0}};
-        else if (op == 1'b1)
-            dout <= dout + {{COUNT_WIDTH-STEP_WIDTH{step[STEP_WIDTH-1]}}, step};
+            pc <= 32'd0;
+        else if (pc_op)
+            pc <= pc_next;
         else
-            dout <= dout + {{COUNT_WIDTH-1{1'b0}}, 1'b1};
+            pc <= pc + 4;
     end
 endmodule

@@ -19,6 +19,149 @@ bool Vtop___024root___trigger_anySet__act(const VlUnpacked<QData/*63:0*/, 1> &in
     return (0U);
 }
 
+void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) {
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___nba_sequent__TOP__0\n"); );
+    Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
+    auto& vlSelfRef = std::ref(*vlSelf).get();
+    // Locals
+    SData/*9:0*/ top__DOT__h_addr;
+    top__DOT__h_addr = 0;
+    SData/*9:0*/ top__DOT__v_addr;
+    top__DOT__v_addr = 0;
+    IData/*23:0*/ top__DOT__vga_data;
+    top__DOT__vga_data = 0;
+    SData/*13:0*/ top__DOT__u_vmem__DOT__addr;
+    top__DOT__u_vmem__DOT__addr = 0;
+    CData/*0:0*/ top__DOT__u_vga_ctrl__DOT__h_valid;
+    top__DOT__u_vga_ctrl__DOT__h_valid = 0;
+    CData/*0:0*/ top__DOT__u_vga_ctrl__DOT__v_valid;
+    top__DOT__u_vga_ctrl__DOT__v_valid = 0;
+    IData/*25:0*/ __Vdly__top__DOT__u_image_control__DOT__cnt;
+    __Vdly__top__DOT__u_image_control__DOT__cnt = 0;
+    SData/*9:0*/ __Vdly__top__DOT__x_addr;
+    __Vdly__top__DOT__x_addr = 0;
+    SData/*9:0*/ __Vdly__top__DOT__y_addr;
+    __Vdly__top__DOT__y_addr = 0;
+    CData/*0:0*/ __Vdly__top__DOT__u_image_control__DOT__x_sped;
+    __Vdly__top__DOT__u_image_control__DOT__x_sped = 0;
+    CData/*0:0*/ __Vdly__top__DOT__u_image_control__DOT__y_sped;
+    __Vdly__top__DOT__u_image_control__DOT__y_sped = 0;
+    SData/*9:0*/ __Vdly__top__DOT__u_vga_ctrl__DOT__x_cnt;
+    __Vdly__top__DOT__u_vga_ctrl__DOT__x_cnt = 0;
+    SData/*9:0*/ __Vdly__top__DOT__u_vga_ctrl__DOT__y_cnt;
+    __Vdly__top__DOT__u_vga_ctrl__DOT__y_cnt = 0;
+    // Body
+    __Vdly__top__DOT__u_image_control__DOT__cnt = vlSelfRef.top__DOT__u_image_control__DOT__cnt;
+    __Vdly__top__DOT__u_image_control__DOT__x_sped 
+        = vlSelfRef.top__DOT__u_image_control__DOT__x_sped;
+    __Vdly__top__DOT__u_image_control__DOT__y_sped 
+        = vlSelfRef.top__DOT__u_image_control__DOT__y_sped;
+    __Vdly__top__DOT__x_addr = vlSelfRef.top__DOT__x_addr;
+    __Vdly__top__DOT__y_addr = vlSelfRef.top__DOT__y_addr;
+    __Vdly__top__DOT__u_vga_ctrl__DOT__x_cnt = vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt;
+    __Vdly__top__DOT__u_vga_ctrl__DOT__y_cnt = vlSelfRef.top__DOT__u_vga_ctrl__DOT__y_cnt;
+    if (vlSelfRef.rst) {
+        __Vdly__top__DOT__u_image_control__DOT__cnt = 0U;
+        __Vdly__top__DOT__u_image_control__DOT__x_sped = 1U;
+        __Vdly__top__DOT__u_image_control__DOT__y_sped = 1U;
+        __Vdly__top__DOT__x_addr = 0U;
+        __Vdly__top__DOT__y_addr = 0U;
+        __Vdly__top__DOT__u_vga_ctrl__DOT__x_cnt = 1U;
+        __Vdly__top__DOT__u_vga_ctrl__DOT__y_cnt = 1U;
+    } else {
+        __Vdly__top__DOT__u_image_control__DOT__cnt 
+            = ((0x0001869fU > vlSelfRef.top__DOT__u_image_control__DOT__cnt)
+                ? (0x03ffffffU & ((IData)(1U) + vlSelfRef.top__DOT__u_image_control__DOT__cnt))
+                : 0U);
+        if ((0x0001869fU == vlSelfRef.top__DOT__u_image_control__DOT__cnt)) {
+            __Vdly__top__DOT__x_addr = (0x000003ffU 
+                                        & ((IData)(vlSelfRef.top__DOT__u_image_control__DOT__x_sped)
+                                            ? ((IData)(1U) 
+                                               + (IData)(vlSelfRef.top__DOT__x_addr))
+                                            : ((IData)(vlSelfRef.top__DOT__x_addr) 
+                                               - (IData)(1U))));
+            __Vdly__top__DOT__y_addr = (0x000003ffU 
+                                        & ((IData)(vlSelfRef.top__DOT__u_image_control__DOT__y_sped)
+                                            ? ((IData)(1U) 
+                                               + (IData)(vlSelfRef.top__DOT__y_addr))
+                                            : ((IData)(vlSelfRef.top__DOT__y_addr) 
+                                               - (IData)(1U))));
+        }
+        __Vdly__top__DOT__u_vga_ctrl__DOT__x_cnt = 
+            ((0x0320U == (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt))
+              ? 1U : (0x000003ffU & ((IData)(1U) + (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt))));
+        if (((0x020dU == (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__y_cnt)) 
+             & (0x0320U == (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt)))) {
+            __Vdly__top__DOT__u_vga_ctrl__DOT__y_cnt = 1U;
+        } else if ((0x0320U == (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt))) {
+            __Vdly__top__DOT__u_vga_ctrl__DOT__y_cnt 
+                = (0x000003ffU & ((IData)(1U) + (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__y_cnt)));
+        }
+    }
+    __Vdly__top__DOT__u_image_control__DOT__x_sped 
+        = ((1U >= (IData)(vlSelfRef.top__DOT__x_addr)) 
+           | ((0x021aU > (IData)(vlSelfRef.top__DOT__x_addr)) 
+              & (IData)(vlSelfRef.top__DOT__u_image_control__DOT__x_sped)));
+    __Vdly__top__DOT__u_image_control__DOT__y_sped 
+        = ((1U >= (IData)(vlSelfRef.top__DOT__y_addr)) 
+           | ((0x017aU > (IData)(vlSelfRef.top__DOT__y_addr)) 
+              & (IData)(vlSelfRef.top__DOT__u_image_control__DOT__y_sped)));
+    vlSelfRef.top__DOT__u_image_control__DOT__x_sped 
+        = __Vdly__top__DOT__u_image_control__DOT__x_sped;
+    vlSelfRef.top__DOT__x_addr = __Vdly__top__DOT__x_addr;
+    vlSelfRef.top__DOT__u_image_control__DOT__y_sped 
+        = __Vdly__top__DOT__u_image_control__DOT__y_sped;
+    vlSelfRef.top__DOT__u_image_control__DOT__cnt = __Vdly__top__DOT__u_image_control__DOT__cnt;
+    vlSelfRef.top__DOT__y_addr = __Vdly__top__DOT__y_addr;
+    vlSelfRef.top__DOT__u_vga_ctrl__DOT__y_cnt = __Vdly__top__DOT__u_vga_ctrl__DOT__y_cnt;
+    vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt = __Vdly__top__DOT__u_vga_ctrl__DOT__x_cnt;
+    vlSelfRef.vsync = (2U < (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__y_cnt));
+    top__DOT__u_vga_ctrl__DOT__v_valid = ((0x0023U 
+                                           < (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__y_cnt)) 
+                                          & (0x0203U 
+                                             >= (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__y_cnt)));
+    vlSelfRef.hsync = (0x0060U < (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt));
+    top__DOT__u_vga_ctrl__DOT__h_valid = ((0x0090U 
+                                           < (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt)) 
+                                          & (0x0310U 
+                                             >= (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt)));
+    top__DOT__v_addr = (0x000003ffU & (((IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__y_cnt) 
+                                        - (IData)(0x0024U)) 
+                                       & (- (IData)((IData)(top__DOT__u_vga_ctrl__DOT__v_valid)))));
+    vlSelfRef.valid = ((IData)(top__DOT__u_vga_ctrl__DOT__h_valid) 
+                       & (IData)(top__DOT__u_vga_ctrl__DOT__v_valid));
+    top__DOT__h_addr = (0x000003ffU & (((IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt) 
+                                        - (IData)(0x0091U)) 
+                                       & (- (IData)((IData)(top__DOT__u_vga_ctrl__DOT__h_valid)))));
+    top__DOT__u_vmem__DOT__addr = (0x00003fffU & (((IData)(top__DOT__h_addr) 
+                                                   - (IData)(vlSelfRef.top__DOT__x_addr)) 
+                                                  + 
+                                                  ((IData)(0x00000064U) 
+                                                   * 
+                                                   (0x00003fffU 
+                                                    & ((IData)(top__DOT__v_addr) 
+                                                       - (IData)(vlSelfRef.top__DOT__y_addr))))));
+    top__DOT__vga_data = (vlSelfRef.top__DOT__u_vmem__DOT__mem
+                          [top__DOT__u_vmem__DOT__addr] 
+                          & (- (IData)(((0x270fU >= (IData)(top__DOT__u_vmem__DOT__addr)) 
+                                        & (((IData)(top__DOT__h_addr) 
+                                            < ((IData)(0x00000064U) 
+                                               + (IData)(vlSelfRef.top__DOT__x_addr))) 
+                                           & (((IData)(top__DOT__h_addr) 
+                                               >= (IData)(vlSelfRef.top__DOT__x_addr)) 
+                                              & (((IData)(top__DOT__v_addr) 
+                                                  < 
+                                                  ((IData)(0x00000064U) 
+                                                   + (IData)(vlSelfRef.top__DOT__y_addr))) 
+                                                 & ((IData)(top__DOT__v_addr) 
+                                                    >= (IData)(vlSelfRef.top__DOT__y_addr)))))))));
+    vlSelfRef.vga_r = (0x000000ffU & (top__DOT__vga_data 
+                                      >> 0x00000010U));
+    vlSelfRef.vga_g = (0x000000ffU & (top__DOT__vga_data 
+                                      >> 8U));
+    vlSelfRef.vga_b = (0x000000ffU & top__DOT__vga_data);
+}
+
 void Vtop___024root___trigger_orInto__act_vec_vec(VlUnpacked<QData/*63:0*/, 1> &out, const VlUnpacked<QData/*63:0*/, 1> &in) {
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___trigger_orInto__act_vec_vec\n"); );
     // Locals
@@ -80,90 +223,7 @@ bool Vtop___024root___eval_phase__nba(Vtop___024root* vlSelf) {
         {
             // Inlined CFunc: _eval_nba
             if ((1ULL & vlSelfRef.__VnbaTriggered[0U])) {
-                {
-                    // Inlined CFunc: _nba_sequent__TOP__0
-                    SData/*9:0*/ __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__h_addr;
-                    __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__h_addr = 0;
-                    SData/*9:0*/ __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__v_addr;
-                    __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__v_addr = 0;
-                    IData/*23:0*/ __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__vga_data;
-                    __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__vga_data = 0;
-                    IData/*17:0*/ __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__u_vmem__DOT__addr;
-                    __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__u_vmem__DOT__addr = 0;
-                    CData/*0:0*/ __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__u_vga_ctrl__DOT__h_valid;
-                    __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__u_vga_ctrl__DOT__h_valid = 0;
-                    CData/*0:0*/ __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__u_vga_ctrl__DOT__v_valid;
-                    __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__u_vga_ctrl__DOT__v_valid = 0;
-                    SData/*9:0*/ __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0___Vdly__top__DOT__u_vga_ctrl__DOT__x_cnt;
-                    __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0___Vdly__top__DOT__u_vga_ctrl__DOT__x_cnt = 0;
-                    SData/*9:0*/ __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0___Vdly__top__DOT__u_vga_ctrl__DOT__y_cnt;
-                    __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0___Vdly__top__DOT__u_vga_ctrl__DOT__y_cnt = 0;
-                    __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0___Vdly__top__DOT__u_vga_ctrl__DOT__x_cnt 
-                        = vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt;
-                    __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0___Vdly__top__DOT__u_vga_ctrl__DOT__y_cnt 
-                        = vlSelfRef.top__DOT__u_vga_ctrl__DOT__y_cnt;
-                    if (vlSelfRef.rst) {
-                        __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0___Vdly__top__DOT__u_vga_ctrl__DOT__x_cnt = 1U;
-                        __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0___Vdly__top__DOT__u_vga_ctrl__DOT__y_cnt = 1U;
-                    } else {
-                        __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0___Vdly__top__DOT__u_vga_ctrl__DOT__x_cnt 
-                            = ((0x0320U == (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt))
-                                ? 1U : (0x000003ffU 
-                                        & ((IData)(1U) 
-                                           + (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt))));
-                        if (((0x020dU == (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__y_cnt)) 
-                             & (0x0320U == (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt)))) {
-                            __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0___Vdly__top__DOT__u_vga_ctrl__DOT__y_cnt = 1U;
-                        } else if ((0x0320U == (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt))) {
-                            __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0___Vdly__top__DOT__u_vga_ctrl__DOT__y_cnt 
-                                = (0x000003ffU & ((IData)(1U) 
-                                                  + (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__y_cnt)));
-                        }
-                    }
-                    vlSelfRef.top__DOT__u_vga_ctrl__DOT__y_cnt 
-                        = __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0___Vdly__top__DOT__u_vga_ctrl__DOT__y_cnt;
-                    vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt 
-                        = __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0___Vdly__top__DOT__u_vga_ctrl__DOT__x_cnt;
-                    vlSelfRef.vsync = (2U < (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__y_cnt));
-                    __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__u_vga_ctrl__DOT__v_valid 
-                        = ((0x0023U < (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__y_cnt)) 
-                           & (0x0203U >= (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__y_cnt)));
-                    vlSelfRef.hsync = (0x0060U < (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt));
-                    __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__u_vga_ctrl__DOT__h_valid 
-                        = ((0x0090U < (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt)) 
-                           & (0x0310U >= (IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt)));
-                    __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__v_addr 
-                        = (0x000003ffU & (((IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__y_cnt) 
-                                           - (IData)(0x0024U)) 
-                                          & (- (IData)(__Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__u_vga_ctrl__DOT__v_valid))));
-                    vlSelfRef.valid = (__Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__u_vga_ctrl__DOT__h_valid 
-                                       & __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__u_vga_ctrl__DOT__v_valid);
-                    __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__h_addr 
-                        = (0x000003ffU & (((IData)(vlSelfRef.top__DOT__u_vga_ctrl__DOT__x_cnt) 
-                                           - (IData)(0x0091U)) 
-                                          & (- (IData)(__Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__u_vga_ctrl__DOT__h_valid))));
-                    __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__u_vmem__DOT__addr 
-                        = (0x0003ffffU & (((IData)(0x00000280U) 
-                                           * (IData)(__Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__v_addr)) 
-                                          + (IData)(__Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__h_addr)));
-                    __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__vga_data 
-                        = (vlSelfRef.top__DOT__u_vmem__DOT__mem
-                           [__Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__u_vmem__DOT__addr] 
-                           & (- (IData)(((0x0003f1ffU 
-                                          >= __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__u_vmem__DOT__addr) 
-                                         & ((0x0280U 
-                                             > __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__h_addr) 
-                                            & (0x0194U 
-                                               > __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__v_addr))))));
-                    vlSelfRef.vga_r = (0x000000ffU 
-                                       & (__Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__vga_data 
-                                          >> 0x00000010U));
-                    vlSelfRef.vga_g = (0x000000ffU 
-                                       & (__Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__vga_data 
-                                          >> 8U));
-                    vlSelfRef.vga_b = (0x000000ffU 
-                                       & __Vinline_0__eval_nba___Vinline_0__nba_sequent__TOP__0_top__DOT__vga_data);
-                }
+                Vtop___024root___nba_sequent__TOP__0(vlSelf);
             }
         }
         Vtop___024root___trigger_clear__act(vlSelfRef.__VnbaTriggered);

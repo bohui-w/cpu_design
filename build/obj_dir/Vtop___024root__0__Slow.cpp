@@ -19,7 +19,7 @@ VL_ATTR_COLD void Vtop___024root___eval_initial(Vtop___024root* vlSelf) {
     // Body
     {
         // Inlined CFunc: _eval_initial__TOP
-        VL_READMEM_N(true, 24, 258560, 0, "picture.hex"s
+        VL_READMEM_N(true, 24, 10000, 0, "picture.hex"s
                      ,  &(vlSelfRef.top__DOT__u_vmem__DOT__mem)
                      , 0, ~0ULL);
     }
@@ -119,7 +119,7 @@ VL_ATTR_COLD bool Vtop___024root___eval_phase__stl(Vtop___024root* vlSelf) {
                     __Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__v_addr = 0;
                     IData/*23:0*/ __Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__vga_data;
                     __Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__vga_data = 0;
-                    IData/*17:0*/ __Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__u_vmem__DOT__addr;
+                    SData/*13:0*/ __Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__u_vmem__DOT__addr;
                     __Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__u_vmem__DOT__addr = 0;
                     CData/*0:0*/ __Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__u_vga_ctrl__DOT__h_valid;
                     __Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__u_vga_ctrl__DOT__h_valid = 0;
@@ -144,18 +144,27 @@ VL_ATTR_COLD bool Vtop___024root___eval_phase__stl(Vtop___024root* vlSelf) {
                                            - (IData)(0x0024U)) 
                                           & (- (IData)(__Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__u_vga_ctrl__DOT__v_valid))));
                     __Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__u_vmem__DOT__addr 
-                        = (0x0003ffffU & (((IData)(0x00000280U) 
-                                           * (IData)(__Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__v_addr)) 
-                                          + (IData)(__Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__h_addr)));
+                        = (0x00003fffU & (((IData)(__Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__h_addr) 
+                                           - (IData)(vlSelfRef.top__DOT__x_addr)) 
+                                          + ((IData)(0x00000064U) 
+                                             * (0x00003fffU 
+                                                & ((IData)(__Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__v_addr) 
+                                                   - (IData)(vlSelfRef.top__DOT__y_addr))))));
                     __Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__vga_data 
                         = (vlSelfRef.top__DOT__u_vmem__DOT__mem
                            [__Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__u_vmem__DOT__addr] 
-                           & (- (IData)(((0x0003f1ffU 
-                                          >= __Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__u_vmem__DOT__addr) 
-                                         & ((0x0280U 
-                                             > __Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__h_addr) 
-                                            & (0x0194U 
-                                               > __Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__v_addr))))));
+                           & (- (IData)(((0x270fU >= __Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__u_vmem__DOT__addr) 
+                                         & ((__Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__h_addr 
+                                             < ((IData)(0x00000064U) 
+                                                + (IData)(vlSelfRef.top__DOT__x_addr))) 
+                                            & ((__Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__h_addr 
+                                                >= (IData)(vlSelfRef.top__DOT__x_addr)) 
+                                               & ((__Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__v_addr 
+                                                   < 
+                                                   ((IData)(0x00000064U) 
+                                                    + (IData)(vlSelfRef.top__DOT__y_addr))) 
+                                                  & (__Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__v_addr 
+                                                     >= (IData)(vlSelfRef.top__DOT__y_addr)))))))));
                     vlSelfRef.vga_r = (0x000000ffU 
                                        & (__Vinline_0__eval_stl___Vinline_0__stl_sequent__TOP__0_top__DOT__vga_data 
                                           >> 0x00000010U));
@@ -199,7 +208,12 @@ VL_ATTR_COLD void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     vlSelf->vga_r = 0;
     vlSelf->vga_g = 0;
     vlSelf->vga_b = 0;
-    for (int __Vi0 = 0; __Vi0 < 258560; ++__Vi0) {
+    vlSelf->top__DOT__x_addr = 0;
+    vlSelf->top__DOT__y_addr = 0;
+    vlSelf->top__DOT__u_image_control__DOT__cnt = 0;
+    vlSelf->top__DOT__u_image_control__DOT__x_sped = 0;
+    vlSelf->top__DOT__u_image_control__DOT__y_sped = 0;
+    for (int __Vi0 = 0; __Vi0 < 10000; ++__Vi0) {
         vlSelf->top__DOT__u_vmem__DOT__mem[__Vi0] = 0;
     }
     vlSelf->top__DOT__u_vga_ctrl__DOT__x_cnt = 0;
