@@ -30,12 +30,15 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop VL_NOT_FINAL : public VerilatedModel {
     // propagate new values into/out from the Verilated model.
     VL_IN8(&clk,0,0);
     VL_IN8(&rst,0,0);
-    VL_OUT8(&hsync,0,0);
-    VL_OUT8(&vsync,0,0);
-    VL_OUT8(&valid,0,0);
-    VL_OUT8(&vga_r,7,0);
-    VL_OUT8(&vga_g,7,0);
-    VL_OUT8(&vga_b,7,0);
+    VL_OUT8(&M_w_en,0,0);
+    VL_OUT8(&M_op,0,0);
+    VL_OUT8(&M_wdata8,7,0);
+    VL_IN8(&M_rdata8,7,0);
+    VL_OUT(&inst_addr,31,0);
+    VL_OUT(&M_addr,31,0);
+    VL_OUT(&M_wdata32,31,0);
+    VL_IN(&M_rdata32,31,0);
+    VL_IN(&inst,31,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.
