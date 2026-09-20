@@ -9,7 +9,7 @@ module ifu (
     assign pc_plus4 = pc + 4;
     always @(posedge clk) begin
         if (rst)
-            pc <= 32'd0;
+            pc <= 32'h80000000;
         else if (ifu_op)
             pc <= pc_next;
         else

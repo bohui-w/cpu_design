@@ -20,6 +20,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop___024root final {
     VL_OUT8(M_op,0,0);
     VL_OUT8(M_wdata8,7,0);
     VL_IN8(M_rdata8,7,0);
+    VL_OUT8(is_ebreak,0,0);
     CData/*4:0*/ top__DOT__rd;
     CData/*4:0*/ top__DOT__rs1;
     CData/*4:0*/ top__DOT__rs2;

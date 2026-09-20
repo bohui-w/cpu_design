@@ -10,7 +10,9 @@ module top (
     output [7:0] M_wdata8,
     input [31:0] M_rdata32,
     input [7:0] M_rdata8,
-    input [31:0] inst
+    input [31:0] inst,
+
+    output is_ebreak
 );
     wire [31:0] pc_plus4;
     wire [4:0]  rd;
@@ -53,7 +55,8 @@ module top (
         .pc_op        (pc_op),
         .mem_op       (mem_op),
         .mem_w_en     (mem_w_en),
-        .wbu_op       (wbu_op)
+        .wbu_op       (wbu_op),
+        .is_ebreak    (is_ebreak)
     );
 
     gpr u_gpr (

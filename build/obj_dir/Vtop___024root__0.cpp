@@ -109,6 +109,7 @@ void Vtop___024root___ico_sequent__TOP__0(Vtop___024root* vlSelf) {
     IData/*31:0*/ __VdfgRegularize_h6e95ff9d_0_1;
     __VdfgRegularize_h6e95ff9d_0_1 = 0;
     // Body
+    vlSelfRef.is_ebreak = (0x00100073U == vlSelfRef.inst);
     top__DOT__u_idu__DOT__is_sw = (IData)((0x00002023U 
                                            == (0x0000707fU 
                                                & vlSelfRef.inst)));
@@ -872,7 +873,7 @@ void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) {
     __Vdly__inst_addr = vlSelfRef.inst_addr;
     __Vdly__top__DOT__u_gpr__DOT__reg_file = vlSelfRef.top__DOT__u_gpr__DOT__reg_file;
     if (vlSelfRef.rst) {
-        __Vdly__inst_addr = 0U;
+        __Vdly__inst_addr = 0x80000000U;
         __Vdly__top__DOT__u_gpr__DOT__reg_file[0U] = 0U;
         __Vdly__top__DOT__u_gpr__DOT__reg_file[1U] = 0U;
         __Vdly__top__DOT__u_gpr__DOT__reg_file[2U] = 0U;

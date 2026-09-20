@@ -4,46 +4,58 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include "Vtop___024root.h"
+#include "miniemu.h"
+
+#define PMEM_BASE  0x80000000
+#define PMEM_SIZE  (128 * 1024 * 1024)
 
 static TOP_NAME dut;
-
-static uint8_t M[1024 * 1024 + 16];
+static uint8_t M[PMEM_SIZE];
 
 void nvboard_bind_all_pins(TOP_NAME* top);
 
 static uint32_t mem_read32(uint32_t addr) {
-    return (uint32_t)M[addr]
-         | ((uint32_t)M[addr + 1] << 8)
-         | ((uint32_t)M[addr + 2] << 16)
-         | ((uint32_t)M[addr + 3] << 24);
+  uint32_t off = addr - PMEM_BASE;
+  if (off > PMEM_SIZE - 4) return 0;
+  return (uint32_t)M[off]
+    | ((uint32_t)M[off + 1] << 8)
+    | ((uint32_t)M[off + 2] << 16)
+    | ((uint32_t)M[off + 3] << 24);
 }
 
 static void mem_write32(uint32_t addr, uint32_t data) {
-    M[addr]   = (data >>  0) & 0xFF;
-    M[addr+1] = (data >>  8) & 0xFF;
-    M[addr+2] = (data >> 16) & 0xFF;
-    M[addr+3] = (data >> 24) & 0xFF;
+  uint32_t off = addr - PMEM_BASE;
+  if (off > PMEM_SIZE - 4) return;
+  M[off]   = (data >>  0) & 0xFF;
+  M[off+1] = (data >>  8) & 0xFF;
+  M[off+2] = (data >> 16) & 0xFF;
+  M[off+3] = (data >> 24) & 0xFF;
 }
 
 static void mem_write8(uint32_t addr, uint8_t data) {
-    M[addr] = data;
+  uint32_t off = addr - PMEM_BASE;
+  if (off >= PMEM_SIZE) return;
+  M[off] = data;
 }
 
 static void single_cycle() {
   dut.clk = 0; dut.eval();
 
-  dut.inst = mem_read32(dut.inst_addr & 0xFFFFC);
+  dut.inst = mem_read32(dut.inst_addr);
   dut.eval();
 
-  uint32_t ma = dut.M_addr & 0xFFFFC;
+  uint32_t ma = dut.M_addr;
   dut.M_rdata32 = mem_read32(ma);
-  dut.M_rdata8  = M[ma];
+  uint32_t ma_off = ma - PMEM_BASE;
+  dut.M_rdata8 = (ma_off < PMEM_SIZE) ? M[ma_off] : 0;
+  // dut.M_rdata8  = M[ma - PMEM_BASE];
   dut.eval();
 
   dut.clk = 1; dut.eval();
 
   if (dut.M_w_en) {
-    uint32_t wa = dut.M_addr & 0xFFFFF;
+    uint32_t wa = dut.M_addr;
     if (dut.M_op) {
       mem_write32(wa, dut.M_wdata32);
     } else {
@@ -52,23 +64,40 @@ static void single_cycle() {
   }
 }
 
-static void load_program() {
-  uint32_t program[] = {
-    0x06400513,  // 0x00: addi a0, zero, 100
-    0x0C800593,  // 0x04: addi a1, zero, 200
-    0x00B50633,  // 0x08: add a2, a0, a1
-    0x123455B7,  // 0x0c: lui a1, 0x12345
-    0x10000713,  // 0x10: addi a4, zero, 0x100
-    0x00C72023,  // 0x14: sw a2, 0(a4)
-    0x00072783,  // 0x18: lw a5, 0(a4)
-    0x05500513,  // 0x1c: addi a0, zero, 0x55
-    0x00A70223,  // 0x20: sb a0, 4(a4)
-    0x00474583,  // 0x24: lbu a1, 4(a4)
-    0x02800067,  // 0x28: jalr  zero, 28(zero)
-  };
-  for (int i = 0; i < (int)(sizeof(program)/sizeof(program[0])); i++) {
-    mem_write32(i * 4, program[i]);
+static void load_program(const char *filename) {
+    FILE *fp = fopen(filename, "rb");
+    if (!fp) { perror("fopen"); exit(1); }
+    fseek(fp, 0, SEEK_END);
+    long size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    if (size > (long)sizeof(M)) {
+        fprintf(stderr, "program too large: %ld bytes\n", size);
+        fclose(fp);
+        exit(1);
+    }
+    if (fread(M, 1, size, fp) != (size_t)size) {
+        perror("fread");
+        fclose(fp);
+        exit(1);
+    }
+    fclose(fp);
+    printf("loaded %ld bytes from %s\n", size, filename);
+    emu_init();
+    emu_load_program(M, (int)size);
+}
+
+int diff() {
+  for (int i = 0; i < 32; i++) {
+    uint32_t dut_reg = dut.rootp->top__DOT__u_gpr__DOT__reg_file[i];
+    uint32_t emu_reg = emu_get_reg(i);
+    if (dut_reg != emu_reg) {
+      printf("DIFF! x%d: DUT=0x%X EMU=0x%X\n", i, dut_reg, emu_reg);
+      return 1;
+    }
+    // printf("x%d: DUT=0x%X EMU=0x%X\n", i, dut_reg, emu_reg);
   }
+  // printf("\n");
+  return 0;
 }
 
 static void reset(int n) {
@@ -78,33 +107,25 @@ static void reset(int n) {
 }
 
 int main() {
+  const char *filename = "/home/cresthush/Desktop/am-kernels/tests/cpu-tests/build/dummy-minirv-npc.bin";
   memset(M, 0, sizeof(M));
-  load_program();
-
+  load_program(filename);
   nvboard_bind_all_pins(&dut);
   nvboard_init();
-
   reset(10);
 
-  uint32_t pc_prev = dut.inst_addr;
-  int same_count = 0;
-
   while(1) {
+    printf("pc:%d\n", emu_get_pc());
     nvboard_update();
     single_cycle();
-
-    uint32_t pc_now = dut.inst_addr;
-
-    if (pc_now == pc_prev) {
-      same_count++;
-    } else {
-      same_count = 0;
+    emu_cycle();
+    
+    if (diff() != 0) {
+      break;
     }
-    pc_prev = pc_now;
-    if (same_count >= 3) {
-      printf("=== halt at pc=0x%02X ===\n", pc_now);
-      printf("M[0x100]=0x%02X M[0x101]=0x%02X M[0x102]=0x%02X M[0x103]=0x%02X M[0x104]=0x%02X\n",
-      M[0x100], M[0x101], M[0x102], M[0x103], M[0x104]);
+
+    if (dut.is_ebreak && emu_is_ebreak()) {
+      printf("\nDiffTest passed!\n");
       break;
     }
   }

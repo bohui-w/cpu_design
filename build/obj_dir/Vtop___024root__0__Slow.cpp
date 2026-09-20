@@ -179,6 +179,7 @@ VL_ATTR_COLD void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     vlSelf->M_rdata32 = 0;
     vlSelf->M_rdata8 = 0;
     vlSelf->inst = 0;
+    vlSelf->is_ebreak = 0;
     vlSelf->top__DOT__rd = 0;
     vlSelf->top__DOT__rs1 = 0;
     vlSelf->top__DOT__rs2 = 0;

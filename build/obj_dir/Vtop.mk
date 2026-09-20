@@ -55,7 +55,7 @@ VM_USER_LDLIBS = \
 VM_USER_CLASSES = \
   auto_bind \
   main \
-  semu \
+  miniemu \
 
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
@@ -76,7 +76,7 @@ auto_bind.o: /home/cresthush/Desktop/project/example/build/auto_bind.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST)  -c -o $@ $<
 main.o: /home/cresthush/Desktop/project/example/csrc/main.cpp 
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST)  -c -o $@ $<
-semu.o: /home/cresthush/Desktop/project/example/csrc/semu.cpp 
+miniemu.o: /home/cresthush/Desktop/project/example/csrc/miniemu.cpp 
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST)  -c -o $@ $<
 
 ### Link rules... (from --exe)

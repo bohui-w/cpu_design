@@ -12,7 +12,8 @@ module idu (
     output reg pc_op,
     output reg mem_op,
     output reg mem_w_en,
-    output reg [1:0] wbu_op
+    output reg [1:0] wbu_op,
+    output is_ebreak
 );
     wire is_addi, is_jalr, is_add, is_lui, is_lw, is_lbu, is_sw, is_sb;
     assign is_addi = (inst[6:0] == 7'b0010011) && (inst[14:12] == 3'b000);
@@ -23,6 +24,7 @@ module idu (
     assign is_lbu  = (inst[6:0] == 7'b0000011) && (inst[14:12] == 3'b100);
     assign is_sw   = (inst[6:0] == 7'b0100011) && (inst[14:12] == 3'b010);
     assign is_sb   = (inst[6:0] == 7'b0100011) && (inst[14:12] == 3'b000);
+    assign is_ebreak = (inst == 32'h00100073);
 
     always @(*) begin
         rd = 5'd0;
@@ -100,6 +102,8 @@ module idu (
             mem_w_en = 1'b1;
             exu_op = 3'd000;
             exu_data_sel = 1'b0;
+        end else begin
+            ;
         end
     end
 endmodule
