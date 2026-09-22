@@ -14,10 +14,6 @@ Vtop___024root::Vtop___024root(Vtop__Syms* symsp, const char* namep)
     Vtop___024root___ctor_var_reset(this);
 }
 
-void Vtop___024root::__Vconfigure(bool first) {
-    (void)first;  // Prevent unused variable warning
-}
-
 Vtop___024root::~Vtop___024root() {
     VL_DO_DANGLING(std::free(const_cast<char*>(vlNamep)), vlNamep);
 }

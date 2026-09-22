@@ -1,4 +1,3 @@
-#include <nvboard.h>
 #include <Vtop.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,12 +9,33 @@
 #define PMEM_BASE  0x80000000
 #define PMEM_SIZE  (128 * 1024 * 1024)
 
-static TOP_NAME dut;
+static Vtop dut;
 static uint8_t M[PMEM_SIZE];
+static uint32_t uart_status = 0;
+static uint32_t clock_lo = 0, clock_hi = 0;
 
-void nvboard_bind_all_pins(TOP_NAME* top);
+static unsigned long long cycle_count = 0;
+
+static unsigned long long get_time() {
+  return cycle_count / 473;
+}
 
 static uint32_t mem_read32(uint32_t addr) {
+  if (addr == 0x10000004) {
+    uart_status = (rand() & 0x7) == 0 ? 1 : 0;
+    emu_set_uart_status(uart_status);
+    return uart_status;
+  }
+  if (addr == 0x20000000) {
+    clock_lo = (uint32_t)(get_time() & 0xffffffff);
+    emu_set_rtc_lo(clock_lo);
+    return clock_lo;
+  }
+  if (addr == 0x20000004) {
+    clock_hi = (uint32_t)(get_time() >> 32);
+    emu_set_rtc_hi(clock_hi);
+    return clock_hi;
+  }
   uint32_t off = addr - PMEM_BASE;
   if (off > PMEM_SIZE - 4) return 0;
   return (uint32_t)M[off]
@@ -25,6 +45,10 @@ static uint32_t mem_read32(uint32_t addr) {
 }
 
 static void mem_write32(uint32_t addr, uint32_t data) {
+  if (addr == 0x10000000) {
+    fputc(data & 0xff, stderr);
+    return;
+  }
   uint32_t off = addr - PMEM_BASE;
   if (off > PMEM_SIZE - 4) return;
   M[off]   = (data >>  0) & 0xFF;
@@ -34,6 +58,10 @@ static void mem_write32(uint32_t addr, uint32_t data) {
 }
 
 static void mem_write8(uint32_t addr, uint8_t data) {
+  if (addr == 0x10000000) {
+    fputc(data & 0xff, stderr);
+    return;
+  }
   uint32_t off = addr - PMEM_BASE;
   if (off >= PMEM_SIZE) return;
   M[off] = data;
@@ -48,8 +76,15 @@ static void single_cycle() {
   uint32_t ma = dut.M_addr;
   dut.M_rdata32 = mem_read32(ma);
   uint32_t ma_off = ma - PMEM_BASE;
-  dut.M_rdata8 = (ma_off < PMEM_SIZE) ? M[ma_off] : 0;
-  // dut.M_rdata8  = M[ma - PMEM_BASE];
+  if (ma == 0x10000004) {
+    dut.M_rdata8 = uart_status & 0xFF;
+  } else if (ma == 0x20000000) {
+    dut.M_rdata8 = (uint8_t)(clock_lo & 0xFF);
+  } else if (ma == 0x20000004) {
+    dut.M_rdata8 = (uint8_t)(clock_hi & 0xFF);
+  } else {
+    dut.M_rdata8 = (ma_off < PMEM_SIZE) ? M[ma_off] : 0;
+  }
   dut.eval();
 
   dut.clk = 1; dut.eval();
@@ -62,6 +97,7 @@ static void single_cycle() {
       mem_write8(wa, dut.M_wdata8);
     }
   }
+  cycle_count++;
 }
 
 static void load_program(const char *filename) {
@@ -106,27 +142,37 @@ static void reset(int n) {
   dut.rst = 0;
 }
 
-int main() {
-  const char *filename = "/home/cresthush/Desktop/am-kernels/tests/cpu-tests/build/dummy-minirv-npc.bin";
+int main(int argc, char *argv[]) {
+  if (argc < 2) {
+    fprintf(stderr, "Usage: %s <program.bin>\n", argv[0]);
+    return 1;
+  }
+
+  const char *filename = argv[1];
   memset(M, 0, sizeof(M));
   load_program(filename);
-  nvboard_bind_all_pins(&dut);
-  nvboard_init();
+
   reset(10);
 
   while(1) {
-    printf("pc:%d\n", emu_get_pc());
-    nvboard_update();
+    // printf("pc:%d\n", emu_get_pc());
     single_cycle();
     emu_cycle();
     
     if (diff() != 0) {
-      break;
+      return 1;
     }
-
+    
     if (dut.is_ebreak && emu_is_ebreak()) {
-      printf("\nDiffTest passed!\n");
-      break;
+      uint32_t code = emu_get_exit_code();
+      if (code == 0) {
+        printf("HIT GOOD TRAP\n");
+        return 0;
+      } else {
+        printf("HIT BAD TRAP\n");
+        return 1;
+      }
     }
   }
+  return 0;
 }

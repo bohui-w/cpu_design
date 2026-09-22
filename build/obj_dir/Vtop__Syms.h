@@ -22,7 +22,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop__Syms final : public VerilatedSyms {
     // INTERNAL STATE
     Vtop* const __Vm_modelp;
     VlDeleter __Vm_deleter;
-    bool __Vm_didInit = false;
+    bool& __Vm_didInit;
 
     // MODULE INSTANCE STATE
     Vtop___024root                 TOP;

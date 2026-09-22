@@ -8,11 +8,18 @@
 #define BITS_S(x, h, l)  (((int32_t)((x) << (31 - (h)))) >> ((31 - (h)) + (l)))
 #define INST_CONCAT(s0, s1, s2, s3) (((uint32_t)s3 << 24) | ((uint32_t)s2 << 16) | ((uint32_t)s1 << 8) | (uint32_t)s0)
 
+static uint32_t rtc_lo_sync = 0;
+static uint32_t rtc_hi_sync = 0;
+
+void emu_set_rtc_lo(uint32_t val) { rtc_lo_sync = val; }
+void emu_set_rtc_hi(uint32_t val) { rtc_hi_sync = val; }
+
 uint8_t M[128 * 1024 * 1024] = {0};
 uint32_t regs[32] = {0};
 uint32_t pc = 0x80000000;
 uint32_t next_pc = 0;
 uint32_t inst = 0;
+uint32_t uart_status_sync = 0;
 int ebreak_flag = 0;
 
 bool is_addi(uint32_t inst) {
@@ -51,6 +58,10 @@ bool is_ebreak(uint32_t inst) {
     return (BITS(inst, 6, 0) == 115) && (BITS(inst, 14, 12) == 0) && (BITS(inst, 31, 20) == 1);
 }
 
+void emu_set_uart_status(uint32_t val) {
+    uart_status_sync = val;
+}
+
 void emu_init(void) {
     memset(M, 0, sizeof(M));
     memset(regs, 0, sizeof(regs));
@@ -68,6 +79,8 @@ uint32_t emu_get_reg(int i) { return regs[i & 31]; }
 uint32_t emu_get_pc(void)   { return pc; }
 
 int emu_is_ebreak(void) { return ebreak_flag; }
+
+uint32_t emu_get_exit_code(void) { return regs[10]; }
 
 void emu_cycle() {
     uint32_t pc_off = pc - 0x80000000;
@@ -88,25 +101,49 @@ void emu_cycle() {
         regs[BITS(inst, 11, 7)] = (uint32_t)BITS(inst, 31, 12) << 12;
     }
     else if (is_lw(inst)) {
-        uint32_t addr = regs[BITS(inst, 19, 15)] + BITS_S(inst, 31, 20) - 0x80000000;
-        regs[BITS(inst, 11, 7)] = INST_CONCAT(M[addr], M[addr+1], M[addr+2], M[addr+3]);
+        uint32_t addr = regs[BITS(inst, 19, 15)] + BITS_S(inst, 31, 20);
+        if (addr == 0x20000000) {
+            regs[BITS(inst, 11, 7)] = rtc_lo_sync;
+        } else if (addr == 0x20000004) {
+            regs[BITS(inst, 11, 7)] = rtc_hi_sync;
+        } else if (addr >= 0x80000000) {
+            uint32_t off = addr - 0x80000000;
+            if (off < sizeof(M) - 4) {
+                regs[BITS(inst, 11, 7)] = INST_CONCAT(M[off], M[off+1], M[off+2], M[off+3]);
+            }
+        }
     }
     else if (is_lbu(inst)) {
-        uint32_t addr = regs[BITS(inst, 19, 15)] + BITS_S(inst, 31, 20) - 0x80000000;
-        regs[BITS(inst, 11, 7)] = M[addr];
+        uint32_t addr = regs[BITS(inst, 19, 15)] + BITS_S(inst, 31, 20);
+        if (addr == 0x10000004) {
+            regs[BITS(inst, 11, 7)] = uart_status_sync;
+        } else if (addr == 0x20000000) {
+            regs[BITS(inst, 11, 7)] = rtc_lo_sync & 0xFF;
+        } else if (addr == 0x20000004) {
+            regs[BITS(inst, 11, 7)] = rtc_hi_sync & 0xFF;
+        } else if (addr >= 0x80000000) {
+            uint32_t off = addr - 0x80000000;
+            if (off < sizeof(M)) regs[BITS(inst, 11, 7)] = M[off];
+        }
     }
     else if (is_sw(inst)) {
-        uint32_t addr = ((uint32_t)BITS_S(inst, 31, 25) << 5) + BITS(inst, 11, 7) + regs[BITS(inst, 19, 15)] - 0x80000000;
+        uint32_t addr = ((uint32_t)BITS_S(inst, 31, 25) << 5) + BITS(inst, 11, 7) + regs[BITS(inst, 19, 15)];
         uint32_t src = regs[BITS(inst, 24, 20)];
-        M[addr] = BITS(src, 7, 0);
-        M[addr+1] = BITS(src, 15, 8);
-        M[addr+2] = BITS(src, 23, 16);
-        M[addr+3] = BITS(src, 31, 24);
+        if (addr != 0x10000000) {
+            uint32_t off = addr - 0x80000000;
+            M[off]   = BITS(src, 7, 0);
+            M[off+1] = BITS(src, 15, 8);
+            M[off+2] = BITS(src, 23, 16);
+            M[off+3] = BITS(src, 31, 24);
+        }
     }
     else if (is_sb(inst)) {
-        uint32_t addr = ((uint32_t)BITS_S(inst, 31, 25) << 5) + BITS(inst, 11, 7) + regs[BITS(inst, 19, 15)] - 0x80000000;
+        uint32_t addr = ((uint32_t)BITS_S(inst, 31, 25) << 5) + BITS(inst, 11, 7) + regs[BITS(inst, 19, 15)];
         uint32_t src = regs[BITS(inst, 24, 20)];
-        M[addr] = BITS(src, 7, 0);
+        if (addr != 0x10000000) {
+            uint32_t off = addr - 0x80000000;
+            M[off] = BITS(src, 7, 0);
+        }
     }
     else if (is_ebreak(inst)) {
         ebreak_flag = 1;

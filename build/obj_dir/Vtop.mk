@@ -12,7 +12,7 @@ PERL = perl
 # Python3 executable (from $PYTHON3, defaults to 'python3' if not set)
 PYTHON3 = python3
 # Path to Verilator kit (from $VERILATOR_ROOT)
-VERILATOR_ROOT = /usr/local/share/verilator
+VERILATOR_ROOT = /home/cresthush/Desktop/oss-cad-suite/share/verilator
 # SystemC include directory with systemc.h (from $SYSTEMC_INCLUDE)
 SYSTEMC_INCLUDE ?=
 # SystemC library directory with libsystemc.a (from $SYSTEMC_LIBDIR)
@@ -31,10 +31,12 @@ VM_PCLI = 1
 VM_SC_TARGET_ARCH = linux
 
 ### Vars...
-# Design prefix (from --prefix)
-VM_PREFIX = Vtop
 # Module prefix (from --prefix)
 VM_MODPREFIX = Vtop
+# Design prefix (from --prefix)
+VM_PREFIX = Vtop
+# Design header include, for '#include VM_PREFIX_INCLUDE' (from --prefix)
+VM_PREFIX_INCLUDE = <Vtop.h>
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
   -MMD \
