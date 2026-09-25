@@ -37,11 +37,12 @@ class alignas(VL_CACHE_LINE_BYTES) Vtop VL_NOT_FINAL : public VerilatedModel {
     VL_OUT8(&M_op,0,0);
     VL_OUT8(&M_wdata8,7,0);
     VL_IN8(&M_rdata8,7,0);
+    VL_OUT8(&ifu_done,0,0);
     VL_OUT8(&is_ebreak,0,0);
-    VL_OUT(&inst_addr,31,0);
     VL_OUT(&M_addr,31,0);
     VL_OUT(&M_wdata32,31,0);
     VL_IN(&M_rdata32,31,0);
+    VL_OUT(&inst_addr,31,0);
     VL_IN(&inst,31,0);
 
     // CELLS

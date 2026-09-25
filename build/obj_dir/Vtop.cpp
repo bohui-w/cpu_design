@@ -16,11 +16,12 @@ Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     , M_op{vlSymsp->TOP.M_op}
     , M_wdata8{vlSymsp->TOP.M_wdata8}
     , M_rdata8{vlSymsp->TOP.M_rdata8}
+    , ifu_done{vlSymsp->TOP.ifu_done}
     , is_ebreak{vlSymsp->TOP.is_ebreak}
-    , inst_addr{vlSymsp->TOP.inst_addr}
     , M_addr{vlSymsp->TOP.M_addr}
     , M_wdata32{vlSymsp->TOP.M_wdata32}
     , M_rdata32{vlSymsp->TOP.M_rdata32}
+    , inst_addr{vlSymsp->TOP.inst_addr}
     , inst{vlSymsp->TOP.inst}
     , rootp{&(vlSymsp->TOP)}
 {

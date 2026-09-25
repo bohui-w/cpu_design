@@ -13,8 +13,11 @@ static Vtop dut;
 static uint8_t M[PMEM_SIZE];
 static uint32_t uart_status = 0;
 static uint32_t clock_lo = 0, clock_hi = 0;
+static uint32_t inst_addr_delay = 0x80000000;
+static uint32_t M_addr_delay = 0;
 
 static unsigned long long cycle_count = 0;
+static unsigned long long inst_count = 0;
 
 static unsigned long long get_time() {
   return cycle_count / 473;
@@ -69,11 +72,9 @@ static void mem_write8(uint32_t addr, uint8_t data) {
 
 static void single_cycle() {
   dut.clk = 0; dut.eval();
-
-  dut.inst = mem_read32(dut.inst_addr);
-  dut.eval();
-
-  uint32_t ma = dut.M_addr;
+  dut.inst = mem_read32(inst_addr_delay);
+  inst_addr_delay = dut.inst_addr;
+  uint32_t ma = M_addr_delay;
   dut.M_rdata32 = mem_read32(ma);
   uint32_t ma_off = ma - PMEM_BASE;
   if (ma == 0x10000004) {
@@ -86,17 +87,18 @@ static void single_cycle() {
     dut.M_rdata8 = (ma_off < PMEM_SIZE) ? M[ma_off] : 0;
   }
   dut.eval();
-
-  dut.clk = 1; dut.eval();
-
   if (dut.M_w_en) {
     uint32_t wa = dut.M_addr;
-    if (dut.M_op) {
+    if (wa == 0x10000000) {
+      fputc(dut.M_wdata8 & 0xFF, stderr);
+    } else if (dut.M_op) {
       mem_write32(wa, dut.M_wdata32);
     } else {
       mem_write8(wa, dut.M_wdata8);
     }
   }
+  M_addr_delay = dut.M_addr;
+  dut.clk = 1; dut.eval();
   cycle_count++;
 }
 
@@ -130,9 +132,7 @@ int diff() {
       printf("DIFF! x%d: DUT=0x%X EMU=0x%X\n", i, dut_reg, emu_reg);
       return 1;
     }
-    // printf("x%d: DUT=0x%X EMU=0x%X\n", i, dut_reg, emu_reg);
   }
-  // printf("\n");
   return 0;
 }
 
@@ -155,15 +155,18 @@ int main(int argc, char *argv[]) {
   reset(10);
 
   while(1) {
-    // printf("pc:%d\n", emu_get_pc());
+    bool will_execute = dut.ifu_done;
     single_cycle();
-    emu_cycle();
-    
-    if (diff() != 0) {
-      return 1;
+    if (will_execute) {
+      inst_count++;
+      emu_cycle();
+      if (diff() != 0) return 1;
     }
-    
-    if (dut.is_ebreak && emu_is_ebreak()) {
+
+    if (emu_is_ebreak()) {
+      printf("inst_count  = %llu\n", inst_count);
+      printf("cycle_count = %llu\n", cycle_count);
+      printf("IPC         = %.4f\n", (double)inst_count / (double)cycle_count);
       uint32_t code = emu_get_exit_code();
       if (code == 0) {
         printf("HIT GOOD TRAP\n");

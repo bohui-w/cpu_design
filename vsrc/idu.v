@@ -1,5 +1,6 @@
 module idu (
     input [31:0] inst,
+    input ifu_valid,
 
     output reg [4:0] rd,
     output reg [4:0] rs1,
@@ -13,6 +14,7 @@ module idu (
     output reg mem_op,
     output reg mem_w_en,
     output reg [1:0] wbu_op,
+    output ifu_ls,
     output is_ebreak
 );
     wire is_addi, is_jalr, is_add, is_lui, is_lw, is_lbu, is_sw, is_sb;
@@ -24,7 +26,9 @@ module idu (
     assign is_lbu  = (inst[6:0] == 7'b0000011) && (inst[14:12] == 3'b100);
     assign is_sw   = (inst[6:0] == 7'b0100011) && (inst[14:12] == 3'b010);
     assign is_sb   = (inst[6:0] == 7'b0100011) && (inst[14:12] == 3'b000);
-    assign is_ebreak = (inst == 32'h00100073);
+    assign is_ebreak = (inst == 32'h00100073) && ifu_valid;
+
+    assign ifu_ls = is_lw || is_lbu;
 
     always @(*) begin
         rd = 5'd0;
@@ -38,72 +42,74 @@ module idu (
         mem_w_en = 1'd0;
         exu_data_sel = 1'd0;
         wbu_op = 2'b00;
-        if (is_addi) begin
-            w_en = 1'b1;
-            rd = inst[11:7];
-            rs1 = inst[19:15];
-            imm = {{20{inst[31]}}, inst[31:20]};
-            exu_op = 3'b000;
-            exu_data_sel = 1'b0;
-            wbu_op = 2'b10;
-        end else if (is_jalr) begin
-            pc_op = 1'b1;
-            w_en = 1'b1;
-            rd = inst[11:7];
-            rs1 = inst[19:15];
-            imm = {{20{inst[31]}}, inst[31:20]};
-            exu_op = 3'b000;
-            exu_data_sel = 1'b0;
-            wbu_op = 2'b11;
-        end else if(is_add) begin
-            w_en = 1'b1;
-            rd = inst[11:7];
-            rs1 = inst[19:15];
-            rs2 = inst[24:20];
-            exu_op = 3'b000;
-            exu_data_sel = 1'b1;
-            wbu_op = 2'b10;
-        end else if (is_lui) begin
-            w_en = 1'b1;
-            rd = inst[11:7];
-            imm = {inst[31:12], 12'd0};
-            wbu_op = 2'b01;
-        end else if (is_lw) begin
-            w_en = 1'b1;
-            rd = inst[11:7];
-            rs1 = inst[19:15];
-            imm = {{20{inst[31]}}, inst[31:20]};
-            mem_op = 1'b1;
-            exu_op = 3'b000;
-            exu_data_sel = 1'b0;
-            wbu_op = 2'b00;
-        end else if (is_lbu) begin
-            w_en = 1'b1;
-            rd = inst[11:7];
-            rs1 = inst[19:15];
-            imm = {{20{inst[31]}}, inst[31:20]};
-            mem_op = 1'b0;
-            exu_op = 3'b000;
-            exu_data_sel = 1'b0;
-            wbu_op = 2'b00;
-        end else if (is_sw) begin
-            rs1 = inst[19:15];
-            rs2 = inst[24:20];
-            imm = {{20{inst[31]}}, inst[31:25], inst[11:7]};
-            mem_op = 1'b1;
-            mem_w_en = 1'b1;
-            exu_op = 3'd000;
-            exu_data_sel = 1'b0;
-        end else if (is_sb) begin
-            rs1 = inst[19:15];
-            rs2 = inst[24:20];
-            imm = {{20{inst[31]}}, inst[31:25], inst[11:7]};
-            mem_op = 1'b0;
-            mem_w_en = 1'b1;
-            exu_op = 3'd000;
-            exu_data_sel = 1'b0;
-        end else begin
-            ;
+        if (ifu_valid) begin
+            if (is_addi) begin
+                w_en = 1'b1;
+                rd = inst[11:7];
+                rs1 = inst[19:15];
+                imm = {{20{inst[31]}}, inst[31:20]};
+                exu_op = 3'b000;
+                exu_data_sel = 1'b0;
+                wbu_op = 2'b10;
+            end else if (is_jalr) begin
+                pc_op = 1'b1;
+                w_en = 1'b1;
+                rd = inst[11:7];
+                rs1 = inst[19:15];
+                imm = {{20{inst[31]}}, inst[31:20]};
+                exu_op = 3'b000;
+                exu_data_sel = 1'b0;
+                wbu_op = 2'b11;
+            end else if(is_add) begin
+                w_en = 1'b1;
+                rd = inst[11:7];
+                rs1 = inst[19:15];
+                rs2 = inst[24:20];
+                exu_op = 3'b000;
+                exu_data_sel = 1'b1;
+                wbu_op = 2'b10;
+            end else if (is_lui) begin
+                w_en = 1'b1;
+                rd = inst[11:7];
+                imm = {inst[31:12], 12'd0};
+                wbu_op = 2'b01;
+            end else if (is_lw) begin
+                w_en = 1'b1;
+                rd = inst[11:7];
+                rs1 = inst[19:15];
+                imm = {{20{inst[31]}}, inst[31:20]};
+                mem_op = 1'b1;
+                exu_op = 3'b000;
+                exu_data_sel = 1'b0;
+                wbu_op = 2'b00;
+            end else if (is_lbu) begin
+                w_en = 1'b1;
+                rd = inst[11:7];
+                rs1 = inst[19:15];
+                imm = {{20{inst[31]}}, inst[31:20]};
+                mem_op = 1'b0;
+                exu_op = 3'b000;
+                exu_data_sel = 1'b0;
+                wbu_op = 2'b00;
+            end else if (is_sw) begin
+                rs1 = inst[19:15];
+                rs2 = inst[24:20];
+                imm = {{20{inst[31]}}, inst[31:25], inst[11:7]};
+                mem_op = 1'b1;
+                mem_w_en = 1'b1;
+                exu_op = 3'd000;
+                exu_data_sel = 1'b0;
+            end else if (is_sb) begin
+                rs1 = inst[19:15];
+                rs2 = inst[24:20];
+                imm = {{20{inst[31]}}, inst[31:25], inst[11:7]};
+                mem_op = 1'b0;
+                mem_w_en = 1'b1;
+                exu_op = 3'd000;
+                exu_data_sel = 1'b0;
+            end else begin
+                ;
+            end
         end
     end
 endmodule

@@ -2,7 +2,6 @@ module top (
     input clk,
     input rst,
 
-    output [31:0] inst_addr,
     output M_w_en,
     output M_op,
     output [31:0] M_addr,
@@ -10,8 +9,11 @@ module top (
     output [7:0] M_wdata8,
     input [31:0] M_rdata32,
     input [7:0] M_rdata8,
+
+    output [31:0] inst_addr,
     input [31:0] inst,
 
+    output ifu_done,
     output is_ebreak
 );
     wire [31:0] pc_plus4;
@@ -33,18 +35,28 @@ module top (
     wire [31:0] pc_next;
     wire [31:0] gpr_data;
     wire [1:0]  wbu_op;
+    wire [31:0] ifu_inst;
+    wire ifu_valid;
+    wire ifu_ls;
 
     ifu u_ifu (
-        .clk      (clk),
-        .rst      (rst),
-        .ifu_op   (pc_op),
-        .pc_next  (pc_next),
-        .pc       (inst_addr),
-        .pc_plus4 (pc_plus4)
+        .clk          (clk),
+        .rst          (rst),
+        .ifu_op       (pc_op),
+        .ifu_pc_next  (pc_next),
+        .ifu_rdata    (inst),
+        .ifu_raddr    (inst_addr),
+        .ifu_ls       (ifu_ls),
+        .ifu_pc       (),
+        .ifu_pc_plus4 (pc_plus4),
+        .ifu_inst     (ifu_inst),
+        .ifu_valid    (ifu_valid),
+        .ifu_done     (ifu_done)
     );
 
     idu u_idu (
-        .inst         (inst),
+        .inst         (ifu_inst),
+        .ifu_valid    (ifu_valid), 
         .rd           (rd),
         .rs1          (rs1),
         .rs2          (rs2),
@@ -56,6 +68,7 @@ module top (
         .mem_op       (mem_op),
         .mem_w_en     (mem_w_en),
         .wbu_op       (wbu_op),
+        .ifu_ls       (ifu_ls),
         .is_ebreak    (is_ebreak)
     );
 
